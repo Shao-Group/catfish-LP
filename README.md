@@ -1,72 +1,66 @@
 # Overview
 
-Catfish implements an efficient heuristic to decompose a given flow into a set of minimum number of paths.  
-Please refer to our paper at [here](https://doi.org/10.1109/TCBB.2017.2779509).
-The tools, scripts, and datasets used in this manuscript can be found at 
-[catfishtest](https://github.com/Kingsford-Group/catfishtest).
-
-# Release
-Latest release of Catfish is [v0.2.1](https://github.com/Kingsford-Group/catfish/releases/tag/v0.2.1),
-including both [source code](https://github.com/Kingsford-Group/catfish/releases/download/v0.2.1/catfish-0.2.1.tar.gz),
-and [linux binary](https://github.com/Kingsford-Group/catfish/releases/download/v0.2.1/catfish-0.2.1_linux_x86_64.tar.gz)
-and [macOS binary](https://github.com/Kingsford-Group/catfish/releases/download/v0.2.1/catfish-0.2.1_macOS_10.10.tar.gz).
+[Catfish](https://github.com/Kingsford-Group/catfish) is an efficient heuristic algorithm for decomposing a given flow into a set of minimum number of paths.
+Catfish-LP incoperates a lightweight linear programming (LP) model to address the core limitations of catfish and largely improves the decompostition quality.
+Please refer to [our manuscript](https://www.biorxiv.org/content/10.64898/2025.12.11.693570v1) for more details of the model.
 
 
 # Installation
-Download Catfish from
-[source code](https://github.com/Kingsford-Group/catfish/releases/download/v0.2.1/catfish-0.2.1.tar.gz).
-To install it, you need to first download 
-Boost if it has not been installed in your system,
-and then compile the source code of Catfish.
+Download catfish-LP:
+```
+git clone https://github.com/Shao-Group/catfish-LP.git
+```
+Catfish requires Boost and catfish-LP requires Gurobi.
 
 ## Install Boost
-If Boost has not been downloaded/installed in your system, download Boost
-[(license)](http://www.boost.org/LICENSE_1_0.txt) from (http://www.boost.org).
-Uncompress it somewhere (compiling and installing are not necessary).
+Boost can be downloaded [here](https://www.boost.org/releases/latest/).
+Uncompress it and note down the directory (compiling and installing are not necessary).
 
-## Compile Catfish
-Use the following to compile and install Catfish:
+## Install Gurobi
+Gurobi Optimizer can be downloaded [here](https://www.gurobi.com/downloads/gurobi-software/); instructions for installation available [here](https://support.gurobi.com/hc/en-us/articles/14799677517585-Getting-Started-with-Gurobi-Optimizer).
+Once completed, note down the library version at `$GUROBI_HOME/lib/libgurobiXXX.so` and modify the [make file](src/Makefile.am), replacing `-lgurobi110` with the installed version.
+
+
+## Compile Catfish-LP
+Use the following to compile and install catfish-LP:
 ```
 aclocal && autoreconf --install
 ./configure --prefix=/path/to/your/installation/directory --with-boost=/path/to/your/boost/directory
-make
+make -j
 make install
 ```
-The `--prefix` argument for `configure` specifies the directory where you would put the binary of Catfish.
+The `--prefix` argument for `configure` specifies the directory where you would put the binary of catfish-LP.
 It is optional and the default is `/usr/local/bin` for most linux distributions.
 If Boost has been installed in your system, the `--with-boost` argument for `configure` can also be omitted.
 
 
 # Usage
-
-The usage of `catfish` is:
+Catfish-LP accept the same command line arguments as [catfish](https://github.com/Kingsford-Group/catfish):
 ```
-catfish -i <input.sgr> -o <output-file> [-a core|full|greedy] [-h] [-v]
+catfish -a full -i <input-file> -o <output-file> [-h] [-v]
 ```
 
-`-i` parameter specifies the input file,
-which specifies multiple directed acyclic graph. 
-Each graph starts with a header line marked with `#`.
-The next line gives n, indicating the number of vertices in this graph.
-The vertices are named from 0 to (n - 1), where vertex 0 has to be the source vertex
-and vertex (n - 1) has to be the sink vertex. 
-Each of the following line specifies an edge, which consists of three integers:
-the in-vertex, out-vertex and the weight of this edge. 
-There is one such input example files at `examples`.
+# Reproduce Results in the Manuscript
+The benchmark datasets with perfect splice graphs introduced by catfish can be found at [catfishtest](https://github.com/Kingsford-Group/catfishtest).
+The tool `catcompare` is used to compare decomposition results with the ground truths.
 
-`-o` parameter specifies the output file, which will show the predicted paths
-and their associated abundances.
+Additional simulated graphs with various complexity can be found in [data](data/).
 
-`-a` parameter specifies the algorithm.
-There are three options: {full, core, greedy}.
-With option of `core`, the program will only run the core algorithm to partly
-decompose the given splice graph, which will predict fewer paths but with
-higher accuracy.
-With option of `full`, the program will completely
-decompose the given splice graph, using greedy algorithm following the core algorithm.
-With option of `greedy`, the program will only use greedy algorithm to fully decompose
-the given splice graph. This parameter is optional, and its default value is `full`.
 
-`-h` parameter prints the usage of Catfish and exits.
-
-`-v` parameter prints the version of Catfish and exits.
+In comparisons, the results of *greedy-width* are obtained using the original [catfish](https://github.com/Kingsford-Group/catfish):
+```
+catfish -a greedy -i <input-file> -o <output-file>
+```
+The results of *catfish* are obtained using the original [catfish](https://github.com/Kingsford-Group/catfish):
+```
+catfish -a full -i <input-file> -o <output-file>
+```
+The results of *catfish-LP* are obtained with this repository:
+```
+catfish -a full -i <input-file> -o <output-file>
+```
+The results of *ILP* are obtained using the [accelerated ILP model](https://drops.dagstuhl.de/storage/00lipics/lipics-vol301-sea2024/LIPIcs.SEA.2024.14/LIPIcs.SEA.2024.14.pdf):
+```
+python mfd_optimization.py -i <input-file> -o <output-file> --heuristic <greedy-solution>
+```
+where the required greedy solution can be transformed from the output file of *greedy-width* with the provied [script](script).
