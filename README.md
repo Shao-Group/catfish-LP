@@ -1,7 +1,7 @@
 # Overview
 
 [Catfish](https://github.com/Kingsford-Group/catfish) is an efficient heuristic algorithm for decomposing a given flow into a set of minimum number of paths.
-Catfish-LP incoperates a lightweight linear programming (LP) model to address the core limitations of catfish and largely improves the decompostition quality.
+**Catfish-LP** incorporates a lightweight linear programming (LP) model to address the core limitations of catfish and largely improves the decomposition quality.
 Please refer to [our manuscript](https://www.biorxiv.org/content/10.64898/2025.12.11.693570v1) for more details of the model.
 
 
@@ -14,11 +14,11 @@ Catfish requires Boost and catfish-LP requires Gurobi.
 
 ## Install Boost
 Boost can be downloaded [here](https://www.boost.org/releases/latest/).
-Uncompress it and note down the directory (compiling and installing are not necessary).
+Decompress it and note down the directory (compiling and installing are not necessary).
 
 ## Install Gurobi
 Gurobi Optimizer can be downloaded [here](https://www.gurobi.com/downloads/gurobi-software/); instructions for installation available [here](https://support.gurobi.com/hc/en-us/articles/14799677517585-Getting-Started-with-Gurobi-Optimizer).
-Once completed, note down the library version at `$GUROBI_HOME/lib/libgurobiXXX.so` and modify the [make file](src/Makefile.am), replacing `-lgurobi110` with the installed version.
+Once completed, note down the library version at `$GUROBI_HOME/lib/libgurobiXXX.so` and modify [Makefile.am in src](src/Makefile.am) by replacing `-lgurobi110` with the installed version.
 
 
 ## Compile Catfish-LP
@@ -30,12 +30,12 @@ make -j
 make install
 ```
 The `--prefix` argument for `configure` specifies the directory where you would put the binary of catfish-LP.
-It is optional and the default is `/usr/local/bin` for most linux distributions.
+It is optional and the default is `/usr/local/bin` for most Linux distributions.
 If Boost has been installed in your system, the `--with-boost` argument for `configure` can also be omitted.
 
 
 # Usage
-Catfish-LP accept the same command line arguments as [catfish](https://github.com/Kingsford-Group/catfish):
+Catfish-LP accepts the same command line arguments as [catfish](https://github.com/Kingsford-Group/catfish):
 ```
 catfish -a full -i <input-file> -o <output-file> [-h] [-v]
 ```
@@ -63,4 +63,4 @@ The results of *ILP* are obtained using the [accelerated ILP model](https://drop
 ```
 python mfd_optimization.py -i <input-file> -o <output-file> --heuristic <greedy-solution>
 ```
-where the required greedy solution can be transformed from the output file of *greedy-width* with the provied [script](script).
+where the required greedy solution can be transformed from the output file of *greedy-width* with the provided [script](scripts).
