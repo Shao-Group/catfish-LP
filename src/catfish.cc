@@ -203,7 +203,7 @@ int catfish::load(catfish &sc)
 int catfish::assemble()
 {
     int c = classify();
-    //if(c == TRIVIAL) return 0;
+    if(algo == "simplify") return c;
 
     if(algo == "core") return assemble1();
     if(algo == "full") return assemble2();

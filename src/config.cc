@@ -26,7 +26,7 @@ int simulation_num_edges = 10;
 int simulation_max_edge_weight = 100;
 
 //// from command line
-string version = "v0.2.1";
+string version = "v1";
 string algo = "full";
 string input_file;
 string output_file;
@@ -138,7 +138,7 @@ int print_command_line(int argc, const char ** argv)
 int print_help()
 {
 	printf("\n");
-	printf("Usage: catfish -i <input.sgr|input.gtf> -o <output-file> [-a core|full|greedy] [-h] [-v]\n");
+	printf("Usage: catfish -i <input.sgr|input.gtf> -o <output-file> [-a core|full|greedy|simplify] [-h] [-v]\n");
 	printf("\n");
 	printf(" %-28s  %s\n", "-i <input.sgr|input.gtf>",  "input file specifying graph, supporting two formats:");
 	printf(" %-28s  %s\n", "",  ".sgr specifies a directed acyclic graph. The first line gives n,");
@@ -151,7 +151,7 @@ int print_help()
 	printf(" %-28s  %s\n", "",  "Catfish will merge all transcripts for each gene into splice graph,");
 	printf(" %-28s  %s\n", "",  "and then try to decompose it.");
 	printf(" %-28s  %s\n", "-o <output-file>",  "output-file with decomposed paths and their weights");
-	printf(" %-28s  %s\n", "-a <core|full|greedy>",  "With option of core, the program will only run the core algorithm to");
+	printf(" %-28s  %s\n", "-a <core|full|greedy|simplify>",  "With option of core, the program will only run the core algorithm to");
 	printf(" %-28s  %s\n", "",  "(partially) decompose the given splice graph, which will predict fewer");
 	printf(" %-28s  %s\n", "",  "paths but with higher accuracy. With option of full, the program will");
 	printf(" %-28s  %s\n", "",  "completely decompose the given splice graph, using greedy algorithm ");
@@ -166,6 +166,6 @@ int print_help()
 
 int print_copyright()
 {
-	printf("Catfish %s (c) 2017 Mingfu Shao, Carl Kingsford, and Carnegie Mellon University\n", version.c_str());
+	printf("Catfish-LP %s (c) 2017 Mingfu Shao, Carl Kingsford, and Carnegie Mellon University (c) 2025 Ke Chen, Mingfu Shao, and Penn State\n", version.c_str());
 	return 0;
 }

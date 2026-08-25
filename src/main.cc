@@ -116,9 +116,16 @@ int assemble(const string &file)
 				    sc.emplace(header.substr(1), sg);
 				}
 				
-				sc->assemble();
-				if(output_file != "") fout << header.c_str() << " paths = " << sc->paths.size() << endl;
-				if(output_file != "") sc->write(fout);
+				int result = sc->assemble();
+				if(algo == "simplify"){
+				    if(output_file != ""){
+					fout << header.c_str() << " " << (result == TRIVIAL? "TRIVIAL" : "NORMAL") << endl;
+				    }
+				}
+				else{
+				    if(output_file != "") fout << header.c_str() << " paths = " << sc->paths.size() << endl;
+				    if(output_file != "") sc->write(fout);
+				}
 			}
 
 			sstr.clear();
@@ -155,9 +162,16 @@ int assemble(const string &file)
 		    sc.emplace(header.substr(1), sg);
 		}
 
-		sc->assemble();
-		if(output_file != "") fout << header.c_str() << " paths = " << sc->paths.size() << endl;
-		if(output_file != "") sc->write(fout);
+		int result = sc->assemble();
+		if(algo == "simplify"){
+		    if(output_file != ""){
+			fout << header.c_str() << " " << (result == TRIVIAL? "TRIVIAL" : "NORMAL") << endl;
+		    }
+		}
+		else{
+		    if(output_file != "") fout << header.c_str() << " paths = " << sc->paths.size() << endl;
+		    if(output_file != "") sc->write(fout);
+		}
 	}
 
 	fin.close();
